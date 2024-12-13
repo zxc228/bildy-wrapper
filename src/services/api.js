@@ -56,6 +56,23 @@ export const fetchClientById = (clientId, token) =>
     headers: { Authorization: `Bearer ${token}` },
   });
 
+// Удаление клиента
+export const deleteClient = (clientId, token) =>
+  axios.delete(`${BASE_URL}/api/client/${clientId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+
+// Обновление клиента
+export const updateClient = (clientId, clientData, token) =>
+  axios.put(`${BASE_URL}/api/client/${clientId}`, clientData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+
+
+
+
 /** Projects */
 // Получение списка проектов
 export const fetchProjects = (token) => 
@@ -81,22 +98,39 @@ export const fetchProjectById = (projectId, token) =>
     headers: { Authorization: `Bearer ${token}` },
   });
 
+
+
+
+// Получение всех проектов клиента
+export const fetchProjectsByClientId = (clientId, token) =>
+  axios.get(`${BASE_URL}/api/project/${clientId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+
+
 /** Delivery Notes */
-// Получение списка накладных
-export const fetchDeliveryNotes = (token) => 
-  axios.get(`${BASE_URL}/api/deliverynote`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
 // Создание накладной
-export const createDeliveryNote = (deliveryNoteData, token) => 
-  axios.post(`${BASE_URL}/api/deliverynote`, deliveryNoteData, {
+export const createDeliveryNote = (noteData, token) =>
+  axios.post(`${BASE_URL}/api/deliverynote`, noteData, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-// Загрузка PDF накладной
-export const downloadDeliveryNotePDF = (deliveryNoteId, token) => 
-  axios.get(`${BASE_URL}/api/deliverynote/pdf/${deliveryNoteId}`, {
+// Получение накладных проекта
+export const fetchDeliveryNotesByProject = (projectId, token) =>
+  axios.get(`${BASE_URL}/api/deliverynote/project/${projectId}`, {
     headers: { Authorization: `Bearer ${token}` },
-    responseType: 'blob', // Для загрузки файлов
+  });
+
+// Скачивание PDF накладной
+export const downloadDeliveryNotePDF = (noteId, token) =>
+  axios.get(`${BASE_URL}/api/deliverynote/pdf/${noteId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    responseType: 'blob',
+  });
+
+// Удаление накладной
+export const deleteDeliveryNote = (noteId, token) =>
+  axios.delete(`${BASE_URL}/api/deliverynote/${noteId}`, {
+    headers: { Authorization: `Bearer ${token}` },
   });

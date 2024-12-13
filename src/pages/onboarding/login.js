@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { loginUser } from '../../services/api';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function Login() {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -16,36 +18,46 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await loginUser(credentials);
-      localStorage.setItem('jwt', response.data.token); // Save token to localStorage
-      router.push('/clients'); // Redirect to clients page
+      localStorage.setItem('jwt', response.data.token);
+      router.push('/clients'); // Перенаправляем на страницу клиентов
     } catch (err) {
-      setError('Login error: ' + (err.response?.data?.message || err.message));
+      setError('Login failed: ' + (err.response?.data?.message || err.message));
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={credentials.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={credentials.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Log In</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-      </form>
+    <>
+    <Header />
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-6 rounded shadow-lg w-96">
+        <h1 className="text-2xl font-bold mb-4">Login</h1>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={credentials.email}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={credentials.password}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
+            Log In
+          </button>
+        </form>
+      </div>
     </div>
+    <Footer />
+    </>
   );
 }

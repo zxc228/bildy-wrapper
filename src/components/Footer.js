@@ -1,8 +1,7 @@
 export default function Footer() {
-    return (
-      <footer style={{ textAlign: 'center', marginTop: '50px' }}>
-        <p>&copy; 2024 Bildy Wrapper. All rights reserved.</p>
-      </footer>
-    );
-  }
-  
+  return (
+    <footer className="bg-gray-800 text-white text-center py-4 mt-10">
+      <p>&copy; 2024 Bildy Wrapper. All rights reserved.</p>
+    </footer>
+  );
+}

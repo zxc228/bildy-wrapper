@@ -1,36 +1,71 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 export default function Header() {
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    setIsAuthenticated(!!token);
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('jwt'); // Удаляем токен из localStorage
-    router.push('/'); // Перенаправляем на страницу логина
+    localStorage.removeItem('jwt');
+    setIsAuthenticated(false);
+    router.push('/');
+  };
+
+  const handleLogoClick = () => {
+    if (isAuthenticated) {
+      router.push('/clients'); // Если авторизован, перенаправляем на клиентов
+    } else {
+      router.push('/'); // Если не авторизован, перенаправляем на главную
+    }
   };
 
   return (
-    <header style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 20px', borderBottom: '1px solid #ddd' }}>
-      <h1>Bildy Wrapper</h1>
-      <nav>
-        <Link href="/clients">Clients</Link>
-        <Link href="/projects">Projects</Link>
-        <Link href="/delivery-notes">Delivery Notes</Link>
-        <button 
-          onClick={handleLogout} 
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'blue',
-            cursor: 'pointer',
-            textDecoration: 'underline',
-            padding: '0',
-            fontSize: '16px',
-          }}
+    <header className="bg-gray-800 text-white p-4 shadow-md">
+      <div className="container mx-auto flex justify-between items-center">
+        {/* Обработка клика для "Bildy Wrapper" */}
+        <h1
+          className="text-2xl font-bold cursor-pointer hover:text-gray-300"
+          onClick={handleLogoClick}
         >
-          Logout
-        </button>
-      </nav>
+          Bildy Wrapper
+        </h1>
+        <nav className="flex space-x-4">
+          {isAuthenticated ? (
+            <>
+              <Link href="/clients" className="hover:underline">
+                Clients
+              </Link>
+              <Link href="/projects" className="hover:underline">
+                Projects
+              </Link>
+              <Link href="/delivery-notes" className="hover:underline">
+                Delivery Notes
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="hover:underline bg-red-600 px-3 py-1 rounded"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/onboarding/register" className="hover:underline">
+                Register
+              </Link>
+              <Link href="/onboarding/login" className="hover:underline">
+                Login
+              </Link>
+            </>
+          )}
+        </nav>
+      </div>
     </header>
   );
 }
