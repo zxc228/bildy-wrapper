@@ -19,47 +19,57 @@ export default function Header() {
 
   const handleLogoClick = () => {
     if (isAuthenticated) {
-      router.push('/clients'); // Если авторизован, перенаправляем на клиентов
+      router.push('/clients');
     } else {
-      router.push('/'); // Если не авторизован, перенаправляем на главную
+      router.push('/');
     }
   };
 
   return (
-    <header className="bg-gray-800 text-white p-4 shadow-md">
+    <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white shadow-lg p-4">
       <div className="container mx-auto flex justify-between items-center">
-        {/* Обработка клика для "Bildy Wrapper" */}
+        {/* Логотип */}
         <h1
-          className="text-2xl font-bold cursor-pointer hover:text-gray-300"
+          className="text-3xl font-extrabold cursor-pointer text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500 hover:scale-105 transition-transform duration-300"
           onClick={handleLogoClick}
         >
           Bildy Wrapper
         </h1>
-        <nav className="flex space-x-4">
+        {/* Навигация */}
+        <nav className="flex space-x-6 items-center">
           {isAuthenticated ? (
             <>
-              <Link href="/clients" className="hover:underline">
+              <Link
+                href="/clients"
+                className="text-gray-300 hover:text-cyan-400 hover:scale-105 transition-transform duration-300 text-lg"
+              >
                 Clients
               </Link>
-              <Link href="/projects" className="hover:underline">
+              <Link
+                href="/projects"
+                className="text-gray-300 hover:text-cyan-400 hover:scale-105 transition-transform duration-300 text-lg"
+              >
                 Projects
-              </Link>
-              <Link href="/delivery-notes" className="hover:underline">
-                Delivery Notes
               </Link>
               <button
                 onClick={handleLogout}
-                className="hover:underline bg-red-600 px-3 py-1 rounded"
+                className="bg-red-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-500 hover:shadow-lg hover:scale-105 transition-all duration-300 text-lg"
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link href="/onboarding/register" className="hover:underline">
+              <Link
+                href="/onboarding/register"
+                className="text-gray-300 hover:text-cyan-400 hover:scale-105 transition-transform duration-300 text-lg"
+              >
                 Register
               </Link>
-              <Link href="/onboarding/login" className="hover:underline">
+              <Link
+                href="/onboarding/login"
+                className="text-gray-300 hover:text-cyan-400 hover:scale-105 transition-transform duration-300 text-lg"
+              >
                 Login
               </Link>
             </>

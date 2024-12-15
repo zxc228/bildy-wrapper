@@ -21,8 +21,9 @@ function Projects() {
   const [deliveryNotes, setDeliveryNotes] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [showNoteForm, setShowNoteForm] = useState(false);
-  const [editingNote, setEditingNote] = useState(null); // Для редактирования
+  const [editingNote, setEditingNote] = useState(null);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const token = typeof window !== 'undefined' ? localStorage.getItem('jwt') : null;
 
   useEffect(() => {
@@ -32,24 +33,27 @@ function Projects() {
   }, [token]);
 
   const fetchProjectsData = async () => {
+    setLoading(true);
     try {
       const response = await fetchProjects(token);
       setProjects(response.data);
     } catch (err) {
       setError('Failed to load projects: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchDeliveryNotes = async (projectId) => {
-    if (!projectId) {
-      console.error('Project ID is missing');
-      return;
-    }
+    if (!projectId) return;
+    setLoading(true);
     try {
       const response = await fetchDeliveryNotesByProject(projectId, token);
       setDeliveryNotes(response.data);
     } catch (err) {
       setError('Failed to load delivery notes: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,61 +121,65 @@ function Projects() {
   return (
     <>
       <Header />
-      <div className="min-h-screen flex flex-col bg-gray-100">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-black to-gray-900 text-gray-300">
         <div className="container mx-auto p-6 flex-grow flex">
-          {/* Блок списка проектов */}
-          <div className="w-1/3 p-4 bg-white shadow rounded">
-            <h2 className="text-2xl font-bold mb-4">Projects</h2>
+          {/* Список проектов */}
+          <div className="w-1/3 p-4 bg-gray-800 rounded shadow-lg">
+            <h2 className="text-2xl font-bold mb-4 text-cyan-400">Projects</h2>
             {error && <p className="text-red-500">{error}</p>}
             <button
               onClick={() => setShowForm(!showForm)}
-              className="bg-blue-600 text-white px-4 py-2 rounded mb-4 hover:bg-blue-500"
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-2 rounded shadow-md hover:scale-105 transition-transform"
             >
               {showForm ? 'Cancel' : 'Add New Project'}
             </button>
 
             {showForm && (
-              <ProjectForm
-                onSubmit={handleCreateProject}
-                initialData={selectedProject || {}}
-              />
+              <ProjectForm onSubmit={handleCreateProject} initialData={selectedProject || {}} />
             )}
 
-            <ul className="space-y-2">
-              {projects.map((project) => (
-                <li
-                  key={project._id}
-                  className={`p-2 cursor-pointer rounded ${
-                    selectedProject?._id === project._id ? 'bg-blue-100' : 'hover:bg-gray-100'
-                  }`}
-                  onClick={() => handleSelectProject(project._id)}
-                >
-                  {project.name}
-                </li>
-              ))}
-            </ul>
+            {loading ? (
+              <div className="flex justify-center items-center h-20">
+                <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-cyan-500"></div>
+              </div>
+            ) : (
+              <ul className="space-y-2 mt-4">
+                {projects.length > 0 ? (
+                  projects.map((project) => (
+                    <li
+                      key={project._id}
+                      className={`p-2 cursor-pointer rounded ${
+                        selectedProject?._id === project._id ? 'bg-cyan-700' : 'hover:bg-cyan-800'
+                      }`}
+                      onClick={() => handleSelectProject(project._id)}
+                    >
+                      {project.name}
+                    </li>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-400 italic">
+                    No projects available. Add a new project to get started.
+                  </p>
+                )}
+              </ul>
+            )}
           </div>
 
-          {/* Блок деталей проекта */}
+          {/* Детали проекта */}
           <div className="w-2/3 p-4">
             {selectedProject ? (
               <>
-                <div className="bg-white p-6 rounded shadow">
-                  <h2 className="text-2xl font-bold mb-4">{selectedProject.name}</h2>
-                  <p><strong>ID:</strong> {selectedProject._id}</p>
-                  <p><strong>Email:</strong> {selectedProject.email}</p>
+                <div className="bg-gray-800 p-6 rounded shadow-lg">
+                  <h2 className="text-2xl font-bold text-cyan-400 mb-4">{selectedProject.name}</h2>
                   <p><strong>Code:</strong> {selectedProject.code}</p>
-                  <p>
-                    <strong>Address:</strong> {selectedProject.address.street}, {selectedProject.address.number}, {selectedProject.address.city}, {selectedProject.address.province}, {selectedProject.address.postal}
-                  </p>
+                  <p><strong>Email:</strong> {selectedProject.email}</p>
                 </div>
 
-                {/* Список накладных */}
-                <div className="mt-6 bg-white p-6 rounded shadow">
-                  <h3 className="text-xl font-bold mb-4">Delivery Notes</h3>
+                <div className="mt-6 bg-gray-800 p-6 rounded shadow-lg">
+                  <h3 className="text-xl font-bold mb-4 text-cyan-400">Delivery Notes</h3>
                   <button
                     onClick={() => setShowNoteForm(!showNoteForm)}
-                    className="bg-green-600 text-white px-4 py-2 rounded mb-4 hover:bg-green-500"
+                    className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded shadow-md hover:scale-105 transition-transform"
                   >
                     {showNoteForm ? 'Cancel' : 'Add Delivery Note'}
                   </button>
@@ -183,19 +191,16 @@ function Projects() {
                     />
                   )}
                   {deliveryNotes.length > 0 ? (
-                    <ul className="space-y-2">
+                    <ul className="space-y-4 mt-6">
                       {deliveryNotes.map((note) => (
-                        <li
-                          key={note._id}
-                          className="p-4 border rounded flex justify-between items-center"
-                        >
+                        <li key={note._id} className="p-4 bg-gray-900 border border-gray-700 rounded flex justify-between items-center">
                           <span>{note.description}</span>
                           <div className="space-x-2">
                             <button
                               onClick={() => handleDownloadPDF(note._id)}
                               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500"
                             >
-                              Download PDF
+                              Download
                             </button>
                             <button
                               onClick={() => {
@@ -217,12 +222,14 @@ function Projects() {
                       ))}
                     </ul>
                   ) : (
-                    <p>No delivery notes available.</p>
+                    <p className="text-gray-400 mt-4">No delivery notes available for this project.</p>
                   )}
                 </div>
               </>
             ) : (
-              <p className="text-gray-600">Select a project to view details</p>
+              <div className="text-center">
+                <h2 className="text-3xl font-bold text-gray-400">Select a project to view details</h2>
+              </div>
             )}
           </div>
         </div>

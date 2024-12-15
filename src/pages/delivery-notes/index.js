@@ -39,44 +39,60 @@ function DeliveryNotes() {
   return (
     <>
       <Header />
-      <div style={{ padding: '20px' }}>
-        <h1>Delivery Notes</h1>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+      <div className="min-h-screen bg-gradient-to-r from-gray-900 via-black to-gray-900 text-gray-300 p-8">
+        <div className="container mx-auto">
+          <h1 className="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500 mb-8">
+            Delivery Notes
+          </h1>
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-        <button onClick={() => setShowForm(!showForm)} style={{ marginBottom: '20px' }}>
-          {showForm ? 'Cancel' : 'Add New Delivery Note'}
-        </button>
-
-        {showForm && (
-          <div style={{ marginBottom: '20px' }}>
-            <DeliveryNoteForm onSubmit={handleCreateDeliveryNote} />
+          <div className="flex justify-center mb-8">
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="bg-gradient-to-r from-cyan-500 to-pink-500 text-white px-6 py-3 rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
+            >
+              {showForm ? 'Cancel' : 'Add New Delivery Note'}
+            </button>
           </div>
-        )}
 
-        {deliveryNotes.length > 0 ? (
-          <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Project ID</th>
-                <th>Description</th>
-                <th>Quantity</th>
-              </tr>
-            </thead>
-            <tbody>
-              {deliveryNotes.map((note) => (
-                <tr key={note.id}>
-                  <td>{note.id}</td>
-                  <td>{note.projectId}</td>
-                  <td>{note.description}</td>
-                  <td>{note.quantity}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No delivery notes available. Add a new one!</p>
-        )}
+          {showForm && (
+            <div className="mb-8">
+              <DeliveryNoteForm onSubmit={handleCreateDeliveryNote} />
+            </div>
+          )}
+
+          {deliveryNotes.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full border border-gray-700 rounded-lg overflow-hidden">
+                <thead className="bg-gray-800 text-white">
+                  <tr>
+                    <th className="p-4 text-left">ID</th>
+                    <th className="p-4 text-left">Project ID</th>
+                    <th className="p-4 text-left">Description</th>
+                    <th className="p-4 text-left">Quantity</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-gray-700 text-gray-300">
+                  {deliveryNotes.map((note) => (
+                    <tr
+                      key={note.id}
+                      className="hover:bg-gray-600 transition-colors duration-200"
+                    >
+                      <td className="p-4">{note.id}</td>
+                      <td className="p-4">{note.projectId}</td>
+                      <td className="p-4">{note.description}</td>
+                      <td className="p-4">{note.quantity}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 mt-8">
+              No delivery notes available. Add a new one!
+            </p>
+          )}
+        </div>
       </div>
       <Footer />
     </>
