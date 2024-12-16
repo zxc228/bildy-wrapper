@@ -28,14 +28,14 @@ export default function Header() {
   return (
     <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white shadow-lg p-4">
       <div className="container mx-auto flex justify-between items-center">
-        {/* Логотип */}
+        {/* Logo */}
         <h1
           className="text-3xl font-extrabold cursor-pointer text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500 hover:scale-105 transition-transform duration-300"
           onClick={handleLogoClick}
         >
           Bildy Wrapper
         </h1>
-        {/* Навигация */}
+        {/* Nav */}
         <nav className="flex space-x-6 items-center">
           {isAuthenticated ? (
             <>

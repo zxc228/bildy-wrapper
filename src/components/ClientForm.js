@@ -2,7 +2,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 export default function ClientForm({ onSubmit, initialData = {} }) {
-  // Схема валидации с использованием Yup
+  
   const validationSchema = Yup.object({
     name: Yup.string().required('Client name is required'),
     cif: Yup.string().required('CIF is required'),
@@ -15,7 +15,7 @@ export default function ClientForm({ onSubmit, initialData = {} }) {
     }),
   });
 
-  // Начальные значения формы
+  // Initial form values
   const initialValues = {
     name: initialData.name || '',
     cif: initialData.cif || '',
@@ -43,11 +43,11 @@ export default function ClientForm({ onSubmit, initialData = {} }) {
             {initialData.name ? 'Update Client' : 'Create Client'}
           </h2>
 
-          {/* Поле имени */}
+          {/* Name field */}
           <div>
             <Field
               name="name"
-              placeholder="Client Name"
+              placeholder="Name"
               className="w-full p-3 bg-gray-800 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
             <ErrorMessage
@@ -57,7 +57,7 @@ export default function ClientForm({ onSubmit, initialData = {} }) {
             />
           </div>
 
-          {/* Поле CIF */}
+          {/* CIF field */}
           <div>
             <Field
               name="cif"
@@ -73,7 +73,7 @@ export default function ClientForm({ onSubmit, initialData = {} }) {
 
           <h3 className="text-lg font-bold text-gray-300">Address</h3>
 
-          {/* Адрес */}
+          {/* Address */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Field
@@ -139,7 +139,7 @@ export default function ClientForm({ onSubmit, initialData = {} }) {
             </div>
           </div>
 
-          {/* Кнопка отправки */}
+          {/* Submit button */}
           <button
             type="submit"
             disabled={isSubmitting}

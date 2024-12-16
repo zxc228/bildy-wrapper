@@ -2,7 +2,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, initialData = {} }) {
-  // Схема валидации формы
+  // Form validation
   const validationSchema = Yup.object({
     clientId: Yup.string().required('Client is required'),
     format: Yup.string().oneOf(['material', 'hours']).required('Format is required'),
@@ -18,7 +18,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
     workdate: Yup.date().required('Work date is required'),
   });
 
-  // Начальные значения формы
+  // Init values
   const initialValues = {
     clientId: initialData.clientId || clients[0]?._id || '',
     projectId: projectId || '',
@@ -44,7 +44,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             Delivery Note Form
           </h2>
 
-          {/* Выбор клиента */}
+          {/* Client Selection */}
           <div className="space-y-2">
             <label className="text-gray-300">Select Client</label>
             <Field
@@ -61,7 +61,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             <ErrorMessage name="clientId" component="div" className="text-red-500 text-sm mt-1" />
           </div>
 
-          {/* Project ID (только для чтения) */}
+          {/* Project ID*/}
           <div className="space-y-2">
             <label className="text-gray-300">Project ID</label>
             <Field
@@ -71,7 +71,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             />
           </div>
 
-          {/* Формат */}
+          {/* Format */}
           <div className="space-y-2">
             <label className="text-gray-300">Format</label>
             <Field
@@ -85,7 +85,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             <ErrorMessage name="format" component="div" className="text-red-500 text-sm mt-1" />
           </div>
 
-          {/* Поля для материалов или часов */}
+          {/* Fields for material or hours */}
           {values.format === 'material' && (
             <div className="space-y-2">
               <label className="text-gray-300">Type of Material</label>
@@ -111,7 +111,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             </div>
           )}
 
-          {/* Описание */}
+          {/* description */}
           <div className="space-y-2">
             <label className="text-gray-300">Description</label>
             <Field
@@ -127,7 +127,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             />
           </div>
 
-          {/* Дата выполнения */}
+          {/* date of completing */}
           <div className="space-y-2">
             <label className="text-gray-300">Work Date</label>
             <Field
@@ -138,7 +138,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             <ErrorMessage name="workdate" component="div" className="text-red-500 text-sm mt-1" />
           </div>
 
-          {/* Кнопка отправки */}
+          {/* submit button */}
           <button
             type="submit"
             disabled={isSubmitting}

@@ -3,7 +3,7 @@ import axios from 'axios';
 const BASE_URL = 'https://bildy-rpmaya.koyeb.app';
 
 /** Onboarding */
-// Регистрация пользователя
+// User registration
 export const registerUser = async (userData) => {
   const response = await axios.post(`${BASE_URL}/api/user/register`, userData);
   const token = response.data.token; // Предполагается, что сервер возвращает токен
@@ -13,11 +13,11 @@ export const registerUser = async (userData) => {
   return response.data;
 };
 
-// Логин пользователя
+// User login
 export const loginUser = (credentials) => 
   axios.post(`${BASE_URL}/api/user/login`, credentials);
 
-// Валидация email
+// Email validation
 export const validateEmail = async (emailValidationData) => {
   const token = localStorage.getItem('jwt');
   if (!token) {
@@ -38,32 +38,32 @@ export const validateEmail = async (emailValidationData) => {
 
 
 /** Clients */
-// Получение списка клиентов
+// Retrieve all clients
 export const fetchClients = (token) => 
   axios.get(`${BASE_URL}/api/client`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-// Создание клиента
+// client creation
 export const createClient = (clientData, token) => 
   axios.post(`${BASE_URL}/api/client`, clientData, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-// Получение клиента по ID
+// Retrieve client by ID
 export const fetchClientById = (clientId, token) => 
   axios.get(`${BASE_URL}/api/client/${clientId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-// Удаление клиента
+// Client deletion
 export const deleteClient = (clientId, token) =>
   axios.delete(`${BASE_URL}/api/client/${clientId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
 
-// Обновление клиента
+// Client update
 export const updateClient = (clientId, clientData, token) =>
   axios.put(`${BASE_URL}/api/client/${clientId}`, clientData, {
     headers: { Authorization: `Bearer ${token}` },
@@ -74,25 +74,25 @@ export const updateClient = (clientId, clientData, token) =>
 
 
 /** Projects */
-// Получение списка проектов
+// Retrieve all projects
 export const fetchProjects = (token) => 
   axios.get(`${BASE_URL}/api/project`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-// Создание проекта
+// Project creation
 export const createProject = (projectData, token) => 
   axios.post(`${BASE_URL}/api/project`, projectData, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-// Обновление проекта
+// Project update
 export const updateProject = (projectId, projectData, token) => 
   axios.put(`${BASE_URL}/api/project/${projectId}`, projectData, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-// Получение проекта по ID
+// Retrieve project by ID
 export const fetchProjectById = (projectId, token) => 
   axios.get(`${BASE_URL}/api/project/one/${projectId}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -101,7 +101,7 @@ export const fetchProjectById = (projectId, token) =>
 
 
 
-// Получение всех проектов клиента
+// Retrieve projects by client ID
 export const fetchProjectsByClientId = (clientId, token) =>
   axios.get(`${BASE_URL}/api/project/${clientId}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -110,26 +110,26 @@ export const fetchProjectsByClientId = (clientId, token) =>
 
 
 /** Delivery Notes */
-// Создание накладной
+// Delivery Note creation
 export const createDeliveryNote = (noteData, token) =>
   axios.post(`${BASE_URL}/api/deliverynote`, noteData, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-// Получение накладных проекта
+// Retrieve all delivery notes
 export const fetchDeliveryNotesByProject = (projectId, token) =>
   axios.get(`${BASE_URL}/api/deliverynote/project/${projectId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-// Скачивание PDF накладной
+// Download delivery note PDF
 export const downloadDeliveryNotePDF = (noteId, token) =>
   axios.get(`${BASE_URL}/api/deliverynote/pdf/${noteId}`, {
     headers: { Authorization: `Bearer ${token}` },
     responseType: 'blob',
   });
 
-// Удаление накладной
+// Delivery Note deletion
 export const deleteDeliveryNote = (noteId, token) =>
   axios.delete(`${BASE_URL}/api/deliverynote/${noteId}`, {
     headers: { Authorization: `Bearer ${token}` },

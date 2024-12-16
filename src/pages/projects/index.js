@@ -123,7 +123,7 @@ function Projects() {
       <Header />
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-black to-gray-900 text-gray-300">
         <div className="container mx-auto p-6 flex-grow flex">
-          {/* Список проектов */}
+          {/* List of projects */}
           <div className="w-1/3 p-4 bg-gray-800 rounded shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-cyan-400">Projects</h2>
             {error && <p className="text-red-500">{error}</p>}
@@ -165,7 +165,7 @@ function Projects() {
             )}
           </div>
 
-          {/* Детали проекта */}
+          {/* Project details */}
           <div className="w-2/3 p-4">
             {selectedProject ? (
               <>

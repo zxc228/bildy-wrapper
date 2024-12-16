@@ -88,7 +88,7 @@ function Clients() {
       <Header />
       <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-900 via-black to-gray-900 text-gray-300">
         <div className="container mx-auto p-8 flex-grow flex gap-8">
-          {/* Список клиентов */}
+          {/* List of clients */}
           <div className="w-1/3 bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">
               Clients
@@ -130,7 +130,7 @@ function Clients() {
             </ul>
           </div>
 
-          {/* Детали клиента и проекты */}
+          {/* CLient details and projects */}
           <div className="w-2/3 bg-gray-800 p-6 rounded-lg shadow-lg">
             {selectedClient ? (
               <>
@@ -163,7 +163,7 @@ function Clients() {
                   </div>
                 </div>
 
-                {/* Список проектов */}
+                {/* List of projects */}
                 <div className="mt-6">
                   <h3 className="text-xl font-bold text-gray-300 mb-4">Projects</h3>
                   {projects.length > 0 ? (

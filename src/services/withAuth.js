@@ -8,7 +8,7 @@ export default function withAuth(Component) {
     useEffect(() => {
       const token = localStorage.getItem('jwt');
       if (!token) {
-        router.push('/'); // Перенаправление на главную страницу, если токен отсутствует
+        router.push('/'); // Send user back to homepage if there's no token
       }
     }, []);
 

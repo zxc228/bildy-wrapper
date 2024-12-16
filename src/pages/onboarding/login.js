@@ -19,7 +19,7 @@ export default function Login() {
     try {
       const response = await loginUser(credentials);
       localStorage.setItem('jwt', response.data.token);
-      router.push('/clients'); // Перенаправляем на страницу клиентов
+      router.push('/clients'); // Open clients page after login
     } catch (err) {
       setError('Login failed: ' + (err.response?.data?.message || err.message));
     }
