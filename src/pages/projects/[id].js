@@ -5,6 +5,7 @@ import {
   fetchDeliveryNotesByProject,
   createDeliveryNote,
   deleteDeliveryNote,
+  updateDeliveryNote,
   updateProject,
   deleteProject,
   downloadDeliveryNotePDF,
@@ -75,14 +76,28 @@ function ProjectDetails() {
     }
   };
 
-  const handleCreateNote = async (formData) => {
+  const handleCreateOrUpdateNote = async (noteData) => {
     try {
-      const noteData = { ...formData, clientId: project.clientId, projectId: id };
-      await createDeliveryNote(noteData, token);
-      fetchDeliveryNotes();
+      const formattedNoteData = {
+        clientId: noteData.clientId,
+        projectId: id,
+        format: noteData.format,
+        material: noteData.material,
+        hours: noteData.hours,
+        description: noteData.description,
+        workdate: noteData.workdate,
+      };
+  
+      if (editingNote) {
+        await updateDeliveryNote(editingNote._id, formattedNoteData, token);
+      } else {
+        await createDeliveryNote(formattedNoteData, token);
+      }
       setShowForm(false);
+      setEditingNote(null);
+      fetchDeliveryNotes(id);
     } catch (err) {
-      setError('Failed to create delivery note: ' + (err.response?.data?.message || err.message));
+      setError('Failed to save delivery note: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -170,9 +185,7 @@ function ProjectDetails() {
                   <p><strong>Code:</strong> {project.projectCode}</p>
                   <p><strong>Internal Code:</strong> {project.code}</p>
                   <p><strong>Email:</strong> {project.email}</p>
-                  <p><strong>Begin Date:</strong> {project.begin}</p>
-                  <p><strong>End Date:</strong> {project.end}</p>
-                  <p><strong>Notes:</strong> {project.notes}</p>
+                  
                   <p><strong>Created At:</strong> {new Date(project.createdAt).toLocaleString()}</p>
                   <p><strong>Updated At:</strong> {new Date(project.updatedAt).toLocaleString()}</p>
                       
@@ -200,7 +213,10 @@ function ProjectDetails() {
           <div className="mt-6 bg-gray-800 p-6 rounded-lg shadow-lg">
             <h3 className="text-2xl font-bold mb-4">Delivery Notes</h3>
             <button
-              onClick={() => setShowForm(!showForm)}
+              onClick={() => {
+                setShowForm(!showForm);
+                setEditingNote(null); // Сбрасываем editingNote при добавлении новой заметки
+              }}
               className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
             >
               {showForm ? 'Cancel' : 'Add Delivery Note'}
@@ -208,8 +224,7 @@ function ProjectDetails() {
             {showForm && (
               <DeliveryNoteForm
                 onSubmit={(formData) => {
-                  handleCreateNote(formData);
-                  setShowForm(false);
+                  handleCreateOrUpdateNote(formData);
                 }}
                 clients={clients}
                 projectId={id}
@@ -223,7 +238,10 @@ function ProjectDetails() {
                     <span>{note.description}</span>
                     <div className="space-x-2">
                       <button
-                        onClick={() => setEditingNote(note)}
+                        onClick={() => {
+                          setEditingNote(note);
+                          setShowForm(true); // Устанавливаем showForm в true
+                        }}
                         className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-400"
                       >
                         Edit

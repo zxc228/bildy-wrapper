@@ -108,10 +108,20 @@ function Projects() {
 
   const handleCreateOrUpdateNote = async (noteData) => {
     try {
+      const formattedNoteData = {
+        clientId: noteData.clientId,
+        projectId: selectedProject._id,
+        format: noteData.format,
+        material: noteData.material,
+        hours: noteData.hours,
+        description: noteData.description,
+        workdate: noteData.workdate,
+      };
+  
       if (editingNote) {
-        await updateDeliveryNote(editingNote._id, noteData, token);
+        await updateDeliveryNote(editingNote._id, formattedNoteData, token);
       } else {
-        await createDeliveryNote({ ...noteData, projectId: selectedProject._id }, token);
+        await createDeliveryNote(formattedNoteData, token);
       }
       setShowNoteForm(false);
       setEditingNote(null);

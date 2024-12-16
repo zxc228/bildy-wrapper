@@ -137,3 +137,10 @@ export const deleteDeliveryNote = (noteId, token) =>
   axios.delete(`${BASE_URL}/api/deliverynote/${noteId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+
+
+export const updateDeliveryNote = (noteId, noteData, token) =>
+  
+  axios.put(`${BASE_URL}/api/deliverynote/${noteId}`, noteData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
