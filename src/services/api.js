@@ -98,7 +98,10 @@ export const fetchProjectById = (projectId, token) =>
     headers: { Authorization: `Bearer ${token}` },
   });
 
-
+export const deleteProjectById = (projectId, token) => 
+  axios.delete(`${BASE_URL}/api/project/${projectId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
 
 // Retrieve projects by client ID

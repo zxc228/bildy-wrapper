@@ -5,23 +5,30 @@ import {
   fetchDeliveryNotesByProject,
   createDeliveryNote,
   deleteDeliveryNote,
+  updateProject,
+  deleteProject,
   downloadDeliveryNotePDF,
   fetchClients,
+  fetchClientById,
 } from '../../services/api';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import withAuth from '@/services/withAuth';
 import DeliveryNoteForm from '../../components/DeliveryNoteForm';
+import ProjectForm from '../../components/ProjectForm';
 
 function ProjectDetails() {
   const router = useRouter();
   const { id } = router.query;
   const [project, setProject] = useState(null);
   const [deliveryNotes, setDeliveryNotes] = useState([]);
+  const [clientData, setClientData] = useState(null);
   const [clients, setClients] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [editingNote, setEditingNote] = useState(null);
+  const [editingProject, setEditingProject] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true); // Для анимации загрузки
+  const [loading, setLoading] = useState(true);
   const token = typeof window !== 'undefined' ? localStorage.getItem('jwt') : null;
 
   useEffect(() => {
@@ -36,7 +43,13 @@ function ProjectDetails() {
     try {
       setLoading(true);
       const response = await fetchProjectById(id, token);
-      setProject(response.data);
+      const projectData = response.data;
+      setProject(projectData);
+
+      if (projectData.clientId) {
+        const clientResponse = await fetchClientById(projectData.clientId, token);
+        setClientData(clientResponse.data);
+      }
     } catch (err) {
       setError('Failed to load project details: ' + (err.response?.data?.message || err.message));
     } finally {
@@ -98,6 +111,27 @@ function ProjectDetails() {
     }
   };
 
+  const handleDeleteProject = async () => {
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      try {
+        await deleteProject(id, token);
+        router.push('/projects');
+      } catch (err) {
+        setError('Failed to delete project: ' + (err.response?.data?.message || err.message));
+      }
+    }
+  };
+
+  const handleUpdateProject = async (updatedData) => {
+    try {
+      await updateProject(id, updatedData, token);
+      fetchProjectDetails();
+      setEditingProject(false);
+    } catch (err) {
+      setError('Failed to update project: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
   return (
     <>
       <Header />
@@ -121,14 +155,43 @@ function ProjectDetails() {
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-cyan-500"></div>
             </div>
           ) : project ? (
-            <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h2 className="text-3xl font-bold mb-4">{project.name}</h2>
-              <p><strong>Code:</strong> {project.projectCode}</p>
-              <p><strong>Internal Code:</strong> {project.code}</p>
-              <p><strong>Email:</strong> {project.email}</p>
-              <p>
-                <strong>Address:</strong> {project.address.street}, {project.address.number}, {project.address.city}, {project.address.province}, {project.address.postal}
-              </p>
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
+              {editingProject ? (
+                <ProjectForm
+                  onSubmit={handleUpdateProject}
+                  initialData={project}
+                />
+              ) : (
+                <>
+                  <h2 className="text-3xl font-bold mb-4">{project.name}</h2>
+                  <p><strong>Client Name:</strong> {clientData?.name || 'Unknown Client'}</p>
+                  <p><strong>Client CIF:</strong> {clientData?.cif || 'Unknown CIF'}</p>
+              
+                  <p><strong>Code:</strong> {project.projectCode}</p>
+                  <p><strong>Internal Code:</strong> {project.code}</p>
+                  <p><strong>Email:</strong> {project.email}</p>
+                  <p><strong>Begin Date:</strong> {project.begin}</p>
+                  <p><strong>End Date:</strong> {project.end}</p>
+                  <p><strong>Notes:</strong> {project.notes}</p>
+                  <p><strong>Created At:</strong> {new Date(project.createdAt).toLocaleString()}</p>
+                  <p><strong>Updated At:</strong> {new Date(project.updatedAt).toLocaleString()}</p>
+                      
+                  <div className="flex gap-4 mt-4">
+                    <button
+                      onClick={() => setEditingProject(true)}
+                      className="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-yellow-400 transition-transform"
+                    >
+                      Edit Project
+                    </button>
+                    <button
+                      onClick={handleDeleteProject}
+                      className="bg-red-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-500 transition-transform"
+                    >
+                      Delete Project
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <p>Loading...</p>
@@ -150,6 +213,7 @@ function ProjectDetails() {
                 }}
                 clients={clients}
                 projectId={id}
+                initialData={editingNote || {}}
               />
             )}
             {deliveryNotes.length > 0 ? (
@@ -158,6 +222,12 @@ function ProjectDetails() {
                   <li key={note._id} className="p-4 border border-gray-700 rounded-lg flex justify-between items-center bg-gray-900">
                     <span>{note.description}</span>
                     <div className="space-x-2">
+                      <button
+                        onClick={() => setEditingNote(note)}
+                        className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-400"
+                      >
+                        Edit
+                      </button>
                       <button
                         onClick={() => handleDownloadPDF(note._id)}
                         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500"
