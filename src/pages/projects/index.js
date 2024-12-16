@@ -50,11 +50,13 @@ function Projects() {
   const fetchClientsData = async () => {
     try {
       const response = await fetchClients(token);
+  
       setClients(response.data);
     } catch (err) {
       setError('Failed to load clients: ' + (err.response?.data?.message || err.message));
     }
   };
+  
 
   const fetchDeliveryNotes = async (projectId) => {
     try {
@@ -219,10 +221,11 @@ function Projects() {
                   >
                     {showNoteForm ? 'Cancel' : 'Add Delivery Note'}
                   </button>
-
-                  {showNoteForm && (
+                  
+                  {showNoteForm && clients.length > 0 &&(
                     <DeliveryNoteForm
                       onSubmit={handleCreateOrUpdateNote}
+                      clients={clients}
                       projectId={selectedProject._id}
                       initialData={editingNote || {}}
                     />

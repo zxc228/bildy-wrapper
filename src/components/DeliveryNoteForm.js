@@ -1,24 +1,9 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 
 export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, initialData = {} }) {
-  // Form validation
-  const validationSchema = Yup.object({
-    clientId: Yup.string().required('Client is required'),
-    format: Yup.string().oneOf(['material', 'hours']).required('Format is required'),
-    material: Yup.string().when('format', {
-      is: 'material',
-      then: Yup.string().required('Material type is required'),
-    }),
-    hours: Yup.number().when('format', {
-      is: 'hours',
-      then: Yup.number().required('Hours worked is required').positive('Must be positive'),
-    }),
-    description: Yup.string().required('Description is required'),
-    workdate: Yup.date().required('Work date is required'),
-  });
 
-  // Init values
+  
+  // Initial values for the form
   const initialValues = {
     clientId: initialData.clientId || clients[0]?._id || '',
     projectId: projectId || '',
@@ -29,10 +14,36 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
     workdate: initialData.workdate || '',
   };
 
+  // Custom validation logic
+  const validate = (values) => {
+    const errors = {};
+
+    if (!values.clientId) {
+      errors.clientId = 'Client is required';
+    }
+    if (!values.format) {
+      errors.format = 'Format is required';
+    }
+    if (values.format === 'material' && !values.material) {
+      errors.material = 'Material type is required';
+    }
+    if (values.format === 'hours' && (!values.hours || values.hours <= 0)) {
+      errors.hours = 'Valid hours worked is required';
+    }
+    if (!values.description) {
+      errors.description = 'Description is required';
+    }
+    if (!values.workdate) {
+      errors.workdate = 'Work date is required';
+    }
+
+    return errors;
+  };
+
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validate={validate}
       onSubmit={(values, { setSubmitting }) => {
         onSubmit(values);
         setSubmitting(false);
@@ -61,7 +72,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             <ErrorMessage name="clientId" component="div" className="text-red-500 text-sm mt-1" />
           </div>
 
-          {/* Project ID*/}
+          {/* Project ID */}
           <div className="space-y-2">
             <label className="text-gray-300">Project ID</label>
             <Field
@@ -111,7 +122,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             </div>
           )}
 
-          {/* description */}
+          {/* Description */}
           <div className="space-y-2">
             <label className="text-gray-300">Description</label>
             <Field
@@ -120,14 +131,10 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
               placeholder="Description"
               className="w-full p-3 bg-gray-800 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
-            <ErrorMessage
-              name="description"
-              component="div"
-              className="text-red-500 text-sm mt-1"
-            />
+            <ErrorMessage name="description" component="div" className="text-red-500 text-sm mt-1" />
           </div>
 
-          {/* date of completing */}
+          {/* Work Date */}
           <div className="space-y-2">
             <label className="text-gray-300">Work Date</label>
             <Field
@@ -138,7 +145,7 @@ export default function DeliveryNoteForm({ onSubmit, clients = [], projectId, in
             <ErrorMessage name="workdate" component="div" className="text-red-500 text-sm mt-1" />
           </div>
 
-          {/* submit button */}
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}
