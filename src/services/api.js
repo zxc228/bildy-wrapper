@@ -6,9 +6,9 @@ const BASE_URL = 'https://bildy-rpmaya.koyeb.app';
 // User registration
 export const registerUser = async (userData) => {
   const response = await axios.post(`${BASE_URL}/api/user/register`, userData);
-  const token = response.data.token; // Предполагается, что сервер возвращает токен
+  const token = response.data.token; 
   if (token) {
-    localStorage.setItem('jwt', token); // Сохраняем токен
+    localStorage.setItem('jwt', token); 
   }
   return response.data;
 };
